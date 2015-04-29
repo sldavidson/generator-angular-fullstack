@@ -59,9 +59,9 @@ describe('angular-fullstack generator', function () {
 
     beforeEach(function() {
       this.timeout(20000);
-      fs.mkdirSync(__dirname + '/temp/client');
+      fs.mkdirSync(__dirname + '/temp');
       fs.symlinkSync(__dirname + '/fixtures/node_modules', __dirname + '/temp/node_modules');
-      fs.symlinkSync(__dirname +'/fixtures/bower_components', __dirname +'/temp/client/bower_components');
+      fs.symlinkSync(__dirname +'/fixtures/bower_components', __dirname +'/temp/bower_components');
     });
 
     describe('with default options', function() {
@@ -125,8 +125,8 @@ describe('angular-fullstack generator', function () {
         });
         gen.run({}, function () {
           helpers.assertFile([
-            'client/app/main/main.less',
-            'client/app/main/main.coffee'
+            'app/main/main.less',
+            'app/main/main.coffee'
           ]);
           done();
         });
@@ -286,23 +286,20 @@ describe('angular-fullstack generator', function () {
 
         gen.run({}, function () {
           helpers.assertFile([
-            'client/.htaccess',
-            'client/favicon.ico',
-            'client/robots.txt',
-            'client/app/main/main.scss',
-            'client/app/main/main.html',
-            'client/index.html',
-            'client/.jshintrc',
-            'client/assets/images/yeoman.png',
+            '.htaccess',
+            'favicon.ico',
+            'robots.txt',
+            'app/main/main.scss',
+            'app/main/main.html',
+            'index.html',
+            '.jshintrc',
+            'assets/images/yeoman.png',
             '.bowerrc',
             '.editorconfig',
             '.gitignore',
             'Gruntfile.js',
             'package.json',
-            'bower.json',
-            'server/app.js',
-            'server/config/express.js',
-            'server/api/thing/index.js']);
+            'bower.json']);
           done();
         });
       });

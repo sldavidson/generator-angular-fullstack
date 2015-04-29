@@ -1,0 +1,29 @@
+// Component styles are injected through grunt
+// injector
+// endinjector
+
+// Custom Styles go here
+$font-family: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+
+html {
+  padding: 0;
+  font-family: $font-family;
+}
+
+body {
+  margin: 0px;
+  font-family: $font-family;
+  font-size: 12px;
+}
+
+svg {
+  overflow: hidden;
+}
+
+// This will mimic your selected badge size in domo.
+#appContainer {
+  position: absolute;
+  width: <%= config.get('appSize').width %>px;
+  height: <%= config.get('appSize').height %>px;
+  overflow: auto;
+}

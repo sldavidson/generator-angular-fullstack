@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- build:css(app) vendor.css -->
+      <!-- bower:css -->
+      <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,src}) app.css -->
+    <link rel="stylesheet" href="app.css">
+      <!-- injector:css -->
+      <!-- endinjector -->
+    <!-- endbuild -->
+  </head>
+  <body ng-app="<%= scriptAppName %>">
+
+    <!-- Add your site or application content here -->
+   <% if (filters.appFrame) { %><div id="appFrame">
+      <div id="mainContainer" ng-controller="SidebarCtrl">
+        <side-bar config="sidebar">
+          <side-bar-drawer name="options"></side-bar-drawer>
+          <side-bar-drawer name="key"></side-bar-drawer>
+        </side-bar>
+        <div id="vis" style="opacity:0;">
+          <div class="view" ui-view=""></div>
+        </div>
+      </div>
+    </div>
+    <% } else { %><div class="view" ui-view=""></div><% } %>
+
+    <% if (filters.siteCatalyst) { %><!--- Site Catalyst -->
+    <script src="//assets.adobedtm.com/d9e9bb9d3d3e09e8b12f49d24b3325c0fdb6f998/satelliteLib-7de7b815f08a7c6a8a97dcd25b3f4288611811f5.js"></script>
+    <% } %>
+
+    <!-- build:js({src,node_modules}) vendor.js -->
+      <!-- bower:js -->
+      <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,src}) app.js -->
+    <script src="app.js"></script>
+      <!-- injector:js -->
+      <!-- endinjector -->
+    <!-- endbuild -->
+</body>
+</html>

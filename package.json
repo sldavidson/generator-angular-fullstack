@@ -1,26 +1,19 @@
 {
-  "name": "generator-angular-fullstack",
+  "name": "generator-da-ng",
   "version": "2.0.13",
-  "description": "Yeoman generator for creating MEAN stack applications, using MongoDB, Express, AngularJS, and Node",
+  "description": "Yeoman generator for creating an AngularJS enterprise app",
   "keywords": [
     "yeoman-generator",
-    "mean",
-    "mongodb",
     "angularjs",
-    "express",
-    "scaffold",
-    "fullstack",
     "framework",
     "component",
     "front-end",
     "app"
   ],
-  "homepage": "https://github.com/DaftMonk/generator-angular-fullstack",
-  "bugs": "https://github.com/DaftMonk/generator-angular-fullstack/issues",
   "author": "Tyler Henkel",
   "repository": {
     "type": "git",
-    "url": "git://github.com/DaftMonk/generator-angular-fullstack.git"
+    "url": "git://github.com/sldavidson/generator-angular-fullstack.git"
   },
   "scripts": {
     "test": "grunt test"
@@ -28,6 +21,7 @@
   "dependencies": {
     "yeoman-generator": "~0.17.0",
     "chalk": "~0.4.0",
+    "yosay": "^0.2.0",
     "wiredep": "~0.4.2",
     "generator-ng-component": "~0.0.4"
   },

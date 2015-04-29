@@ -4,6 +4,7 @@ var path = require('path');
 var util = require('util');
 var genUtils = require('../util.js');
 var yeoman = require('yeoman-generator');
+var yosay = require('yosay');
 var chalk = require('chalk');
 var wiredep = require('wiredep');
 
@@ -27,8 +28,10 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
   },
 
   info: function () {
-    this.log(this.yeoman);
-    this.log('Out of the box I create an AngularJS app with an Express server.\n');
+    if (!this.options['skip-welcome-message']) {
+      this.log(yosay('Hello! I\'m about to hook you up with some awesome tools. All I ask for in return is that you build an awesome Domo App with it. Good Luck!'));
+      this.log(chalk.magenta('Out of the box I include D3, Lodash, and AngularJS.\n'));
+    }
   },
 
   checkForConfig: function() {
@@ -42,16 +45,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         default: true,
       }], function (answers) {
         this.skipConfig = answers.skipConfig;
-
-        // NOTE: temp(?) fix for #403
-        if(typeof this.oauth==='undefined') {
-          var strategies = Object.keys(this.filters).filter(function(key) {
-            return key.match(/Auth$/) && key;
-          });
-
-          if(strategies.length) this.config.set('oauth', true);
-        }
-
         cb();
       }.bind(this));
     } else {
@@ -63,193 +56,123 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
     if(this.skipConfig) return;
     var cb = this.async();
 
-    this.log('# Client\n');
-
     this.prompt([{
-        type: "list",
-        name: "script",
-        message: "What would you like to write scripts with?",
-        choices: [ "JavaScript", "CoffeeScript"],
-        filter: function( val ) {
-          var filterMap = {
-            'JavaScript': 'js',
-            'CoffeeScript': 'coffee'
-          };
-
-          return filterMap[val];
-        }
+        type: 'input',
+        name: 'dimensions',
+        message: 'What badge size would you like your app to be?',
+        default: '5x3'
       }, {
-        type: "list",
-        name: "markup",
-        message: "What would you like to write markup with?",
-        choices: [ "HTML", "Jade"],
-        filter: function( val ) { return val.toLowerCase(); }
+        type: 'confirm',
+        name: 'compass',
+        message: 'Would you like to include Compass for Sass?',
+        default: true
       }, {
-        type: "list",
-        name: "stylesheet",
-        default: 1,
-        message: "What would you like to write stylesheets with?",
-        choices: [ "CSS", "Sass", "Stylus", "Less"],
-        filter: function( val ) { return val.toLowerCase(); }
-      },  {
-        type: "list",
-        name: "router",
-        default: 1,
-        message: "What Angular router would you like to use?",
-        choices: [ "ngRoute", "uiRouter"],
-        filter: function( val ) { return val.toLowerCase(); }
-      }, {
-        type: "confirm",
-        name: "bootstrap",
-        message: "Would you like to include Bootstrap?"
-      }, {
-        type: "confirm",
-        name: "uibootstrap",
-        message: "Would you like to include UI Bootstrap?",
-        when: function (answers) {
-          return answers.bootstrap;
-        }
-      }], function (answers) {
-        this.filters[answers.script] = true;
-        this.filters[answers.markup] = true;
-        this.filters[answers.stylesheet] = true;
-        this.filters[answers.router] = true;
-        this.filters.bootstrap = !!answers.bootstrap;
-        this.filters.uibootstrap =  !!answers.uibootstrap;
-      cb();
-      }.bind(this));
-  },
-
-  serverPrompts: function() {
-    if(this.skipConfig) return;
-    var cb = this.async();
-    var self = this;
-
-    this.log('\n# Server\n');
-
-    this.prompt([{
-      type: "confirm",
-      name: "mongoose",
-      message: "Would you like to use mongoDB with Mongoose for data modeling?"
-    }, {
-      type: "confirm",
-      name: "auth",
-      message: "Would you scaffold out an authentication boilerplate?",
-      when: function (answers) {
-        return answers.mongoose;
-      }
-    }, {
       type: 'checkbox',
-      name: 'oauth',
-      message: 'Would you like to include additional oAuth strategies?',
-      when: function (answers) {
-        return answers.auth;
-      },
+      name: 'modules',
+      message: 'Which modules would you like to include?',
       choices: [
         {
-          value: 'googleAuth',
-          name: 'Google',
-          checked: false
-        },
-        {
-          value: 'facebookAuth',
-          name: 'Facebook',
-          checked: false
-        },
-        {
-          value: 'twitterAuth',
-          name: 'Twitter',
-          checked: false
+          value: 'uirouter',
+          name: 'UI Router',
+          checked: true
+        }, {
+          value: 'animateModule',
+          name: 'angular-animate.js',
+          checked: true
+        }, {
+          value: 'cookiesModule',
+          name: 'angular-cookies.js',
+          checked: true
+        }, {
+          value: 'resourceModule',
+          name: 'angular-resource.js',
+          checked: true
+        }, {
+          value: 'routeModule',
+          name: 'angular-ui-router.js',
+          checked: true
+        }, {
+          value: 'sanitizeModule',
+          name: 'angular-sanitize.js',
+          checked: true
+        }, {
+          value: 'touchModule',
+          name: 'angular-touch.js',
+          checked: true
+        }, {
+          value: 'appFrame',
+          name: 'da.appFrame.js',
+          checked: true
+        }, {
+          value: 'moment',
+          name: 'moment.js',
+          checked: true
+        }, {
+          value: 'siteCatalyst',
+          name: 'site catalyst',
+          checked: true
         }
       ]
-    }, {
-      type: "confirm",
-      name: "socketio",
-      message: "Would you like to use socket.io?",
-      // to-do: should not be dependent on mongoose
-      when: function (answers) {
-        return answers.mongoose;
-      },
-      default: true
     }], function (answers) {
-      if(answers.socketio) this.filters.socketio = true;
-      if(answers.mongoose) this.filters.mongoose = true;
-      if(answers.auth) this.filters.auth = true;
-      if(answers.oauth) {
-        if(answers.oauth.length) this.filters.oauth = true;
-        answers.oauth.forEach(function(oauthStrategy) {
-          this.filters[oauthStrategy] = true;
-        }.bind(this));
-      }
+      var hasMod = function (mod) { return answers.modules.indexOf(mod) !== -1; };
+      this.config.set('appSize', require('../size')(answers.dimensions || '5x3'));
+      this.filters.compass =  !!answers.compass;
+      this.filters.uirouter = hasMod('uirouter');
+      this.filters.animateModule = hasMod('animateModule');
+      this.filters.cookiesModule = hasMod('cookiesModule');
+      this.filters.resourceModule = hasMod('resourceModule');
+      this.filters.routeModule = hasMod('routeModule');
+      this.filters.sanitizeModule = hasMod('sanitizeModule');
+      this.filters.touchModule = hasMod('touchModule');
+      this.filters.appFrame = hasMod('appFrame');
+      this.filters.moment = hasMod('moment');
+      this.filters.siteCatalyst = hasMod('siteCatalyst');
 
       cb();
-    }.bind(this));
+      }.bind(this)
+    );
   },
 
   saveSettings: function() {
     if(this.skipConfig) return;
-    this.config.set('insertRoutes', true);
-    this.config.set('registerRoutesFile', 'server/routes.js');
-    this.config.set('routesNeedle', '// Insert routes below');
-
-    this.config.set('routesBase', '/api/');
-    this.config.set('pluralizeRoutes', true);
-
-    this.config.set('insertSockets', true);
-    this.config.set('registerSocketsFile', 'server/config/socketio.js');
-    this.config.set('socketsNeedle', '// Insert sockets below');
-
     this.config.set('filters', this.filters);
     this.config.forceSave();
   },
 
   compose: function() {
     if(this.skipConfig) return;
-    var appPath = 'client/app/';
-    var extensions = [];
+    var appPath = 'app/';
     var filters = [];
 
     if(this.filters.ngroute) filters.push('ngroute');
     if(this.filters.uirouter) filters.push('uirouter');
-    if(this.filters.coffee) extensions.push('coffee');
-    if(this.filters.js) extensions.push('js');
-    if(this.filters.html) extensions.push('html');
-    if(this.filters.jade) extensions.push('jade');
-    if(this.filters.css) extensions.push('css');
-    if(this.filters.stylus) extensions.push('styl');
-    if(this.filters.sass) extensions.push('scss');
-    if(this.filters.less) extensions.push('less');
-
     this.composeWith('ng-component', {
       options: {
         'routeDirectory': appPath,
-        'directiveDirectory': appPath,
-        'filterDirectory': appPath,
-        'serviceDirectory': appPath,
         'filters': filters,
-        'extensions': extensions,
-        'basePath': 'client'
       }
     }, { local: require.resolve('generator-ng-component/app/index.js') });
   },
 
   ngModules: function() {
-    this.filters = this._.defaults(this.config.get('filters'), {
-      bootstrap: true,
-      uibootstrap: true
-    });
+    this.filters = this.config.get('filters');
 
-    var angModules = [
-      "'ngCookies'",
-      "'ngResource'",
-      "'ngSanitize'"
-    ];
-    if(this.filters.ngroute) angModules.push("'ngRoute'");
-    if(this.filters.socketio) angModules.push("'btford.socket-io'");
-    if(this.filters.uirouter) angModules.push("'ui.router'");
-    if(this.filters.uibootstrap) angModules.push("'ui.bootstrap'");
+    var ngModules = [];
 
-    this.angularModules = "\n  " + angModules.join(",\n  ") +"\n";
+    if (this.filters.uirouter) { ngModules.push("'ui.router'");}
+    if (this.filters.animateModule) { ngModules.push("'ngAnimate'");}
+    if (this.filters.cookiesModule) { ngModules.push("'ngCookies'"); }
+    if (this.filters.resourceModule) { ngModules.push("'ngResource'"); }
+    if (this.filters.sanitizeModule) { ngModules.push("'ngSanitize'"); }
+    if (this.filters.touchModule) { ngModules.push("'ngTouch'"); }
+    if (this.filters.appFrame) { ngModules.push("'da.appFrame'"); }
+    if (this.filters.moment) { ngModules.push("'angularMoment'"); }
+    if (this.filters.siteCatalyst) {
+      ngModules.push("'angulartics'");
+      ngModules.push("'angulartics.adobe.analytics'");
+    }
+
+    this.angularModules = "\n  " + ngModules.join(",\n  ") +"\n";
   },
 
   generate: function() {

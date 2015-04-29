@@ -1,24 +1,27 @@
-{
+{<% var ngVer = "1.4.0" %>
   "name": "<%= _.slugify(_.humanize(appname)) %>",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "dependencies": {
-    "angular": ">=1.2.*",
-    "json3": "~3.3.1",
-    "es5-shim": "~3.0.1",<% if(filters.bootstrap) { %><% if (filters.sass) { %>
-    "bootstrap-sass-official": "~3.1.1",<% } %>
-    "bootstrap": "~3.1.1",<% } %>
-    "angular-resource": ">=1.2.*",
-    "angular-cookies": ">=1.2.*",
-    "angular-sanitize": ">=1.2.*",<% if(filters.ngroute) { %>
-    "angular-route": ">=1.2.*",<% } %><% if(filters.uibootstrap) { %>
-    "angular-bootstrap": "~0.11.0",<% } %>
-    "font-awesome": ">=4.1.0",
-    "lodash": "~2.4.1"<% if(filters.socketio) { %>,
-    "angular-socket-io": "~0.6.0"<% } %><% if(filters.uirouter) { %>,
-    "angular-ui-router": "~0.2.10"<% } %>
+    "angular": "~<%= ngVer %>",
+    "lodash": "^2.4.1",
+    "d3": "^3.5.0",
+    "i18n": "DA/i18n#x",
+    "drop": "~0.5.5",
+    "shepherd.js": "~0.5.1"<% if (filters.resourceModule) { %>,
+    "angular-resource": "~<%= ngVer %>"<% } %><% if (filters.cookiesModule) { %>,
+    "angular-cookies": "~<%= ngVer %>"<% } %><% if (filters.sanitizeModule) { %>,
+    "angular-sanitize": "~<%= ngVer %>"<% } %><% if (filters.animateModule) { %>,
+    "angular-animate": "~<%= ngVer %>"<% } %><% if (filters.touchModule) { %>,
+    "angular-touch": "~<%= ngVer %>"<% } %><% if (filters.routeModule) { %>,
+    "angular-ui-router": "~0.2.11"<% } %><% if (filters.appFrame) { %>,
+    "da.appFrame": "nick-randall/da.appFrame#~0.0.16"<% } %><% if (filters.moment) { %>,
+    "angular-moment": "~0.8.3"<% } %><% if (filters.siteCatalyst) { %>,
+    "angulartics": "DA/angulartics"<% } %>
   },
   "devDependencies": {
-    "angular-mocks": ">=1.2.*",
-    "angular-scenario": ">=1.2.*"
-  }
+    "angular-mocks": "~<%= ngVer %>",
+    "angular-scenario": "~<%= ngVer %>"
+  }<% if (appPath) { %>,
+  "appPath": "<%= appPath %>"<% } %><% if (scriptAppName) { %>,
+  "appName": "<%= scriptAppName %>"<% } %>
 }
